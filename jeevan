@@ -1,0 +1,137 @@
+import java.util.*;
+public class ttt {
+    static ArrayList<Integer> playerpositon = new ArrayList<>();
+    static ArrayList<Integer> cpupositon = new ArrayList<>();
+    public static void main(String[] args) {
+        char[][] gameboard = {{' ', '|', ' ', '|', ' '},
+                             {'-', '+', '-', '+', '-'},
+                             {' ', '|', ' ', '|', ' '},
+                             {'-', '+', '-', '+', '-'},
+                             {' ', '|', ' ', '|', ' '}};  
+
+        Scanner sc = new Scanner(System.in);
+        while (true) {
+            System.out.println("Enter your placement 1-9");
+            int playerpos = sc.nextInt();
+            while (playerpositon.contains(playerpos) || cpupositon.contains(playerpositon)) {
+                System.out.println("position is taken ! enter a correct position");
+                playerpos = sc.nextInt();
+            }
+            // System.out.println(playerpos);
+            placepiece(gameboard, playerpos, "player");
+            
+            String result = checkwinner();
+            if(result.length() > 0){
+            System.out.println(result); 
+            break;
+            }
+    
+            Random rand = new Random();
+            int cpupos = rand.nextInt(9) + 1;
+            while (playerpositon.contains(cpupos) || cpupositon.contains(cpupositon)) {
+                System.out.println("position is taken ! enter a correct position");
+                cpupos = rand.nextInt(9) + 1;
+            }
+            placepiece(gameboard, cpupos, "cpu");
+    
+            printgameboard(gameboard);
+
+            result = checkwinner();
+            if(result.length() > 0){
+            System.out.println(result); 
+            break;
+            }
+        }
+       
+        
+    }
+    public static void printgameboard(char[][] gameboard) {
+        for(char[] row: gameboard) {
+            for(char c : row) {
+                System.out.print(c);
+            }
+            System.out.println();
+         }
+
+    }
+    public static void placepiece(char[][] gameboard, int pos , String user) {
+        char symbol = ' ';
+        if(user.equals("player")){
+            symbol = 'X';
+            playerpositon.add(pos);
+        }
+        if(user.equals("cpu")) {
+            symbol = 'O';
+            cpupositon.add(pos);
+        }
+        switch (pos) {
+           
+            case 1:
+               gameboard[0][0] =  symbol;
+               break; 
+            case 2:
+               gameboard[0][2] =  symbol;
+               break;
+            case 3:
+               gameboard[0][4] =  symbol;
+               break; 
+           case 4:
+               gameboard[2][0] =  symbol;
+               break; 
+            case 5:
+               gameboard[2][2] =  symbol;
+               break; 
+            case 6:
+               gameboard[2][4] =  symbol;
+               break; 
+           case 7:
+               gameboard[4][0] =  symbol;
+               break; 
+            case 8:
+               gameboard[4][2] =  symbol;
+               break;
+           case 9:
+               gameboard[4][4] =  symbol;
+               break;
+       
+           default:
+               break;
+       }
+    }
+    public static String checkwinner() {
+        // row
+        List toprow = Arrays.asList(1,2,3);
+        List midrow = Arrays.asList(4,5,6); 
+        List botrow = Arrays.asList(7,8,9);
+        // col
+        List leftcol =  Arrays.asList(1,4,7);
+        List midcol =   Arrays.asList(2,5,8); 
+        List rightcol = Arrays.asList(3,6,9);
+        // diagonal
+        List cross1 =   Arrays.asList(1,5,9); 
+        List cross2 = Arrays.asList(7,5,3);
+
+        List<List> winning = new ArrayList<List>();
+        winning.add(toprow);
+        winning.add(midrow);
+        winning.add(botrow);
+        winning.add(leftcol);
+        winning.add(midcol);
+        winning.add(rightcol);
+        winning.add(cross1);
+        winning.add(cross2);
+
+        for(List l : winning) {
+            if(playerpositon.containsAll(l)) {
+                return "Congratulations you won!";
+            } else if(cpupositon.containsAll(l)) {
+                return "CPU wins sorry!";
+            } else if(cpupositon.size() + playerpositon.size() == 9) {
+                return "tie";
+            }
+        }
+
+
+        return "";
+    }
+}
